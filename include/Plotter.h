@@ -49,6 +49,9 @@ class Plotter:public QWidget
 		void setMaxPoints(int);
 		int  maxPoints();
 
+		void setOffsets(int,double,double);
+		double xOffset(int);
+		double yOffset(int);
 		
 		void dataLimits(double *,double *,double *,double *);
 

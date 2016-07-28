@@ -54,6 +54,8 @@ class Series
 
 		double *x;// direct access to the ring buffers
 		double *y;
+		double xOffset; // offset to subtract 
+		double yOffset; // offset to subtract
 		
 		int head();
 		int tail();

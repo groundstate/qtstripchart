@@ -33,6 +33,8 @@ Series::Series(int npts)
 {
 	x = new double[npts];
 	y = new double[npts];
+	xOffset = 0;
+	yOffset = 0;
 	
 	maxPoints_=npts;
 	head_=-1;

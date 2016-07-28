@@ -96,8 +96,27 @@ int Plotter::maxPoints()
 	return 0;
 }
 
+void Plotter::setOffsets(int id,double xOffset,double yOffset)
+{
+	if (id >= data_.size()) return;
+	data_[id]->xOffset=xOffset;
+	data_[id]->yOffset=yOffset;
+	// FIXME may need to update interanl max/mins ...
+}
 
+double Plotter::xOffset(int id)
+{
+	if (id >= data_.size()) return 0.0; // FIXME NOT IDEAL
+	return data_[id]->xOffset;
+}
 
+double Plotter::yOffset(int id)
+{
+	if (id >= data_.size()) return 0.0; // FIXME NOT IDEAL
+	return data_[id]->yOffset;
+}
+
+		
 void Plotter::setScrollingWindow(bool)
 {
 	scrolling_=true;
@@ -164,9 +183,11 @@ void Plotter::addPoint(int id,double x,double y)
 {
 	if (id >= data_.size()) return;
 	data_[id]->addPoint(x,y);
-
-	if (x > xMaxWin_){ // start scrolling
-		xMaxWin_=x;
+	
+	double xd = x-data_[id]->xOffset;
+	
+	if (xd > xMaxWin_){ // start scrolling
+		xMaxWin_=xd;
 		xMinWin_= xMaxWin_-scrollingWindowSize_;
 	}
 	
@@ -184,9 +205,10 @@ void Plotter::addPoints(int *id,double *x,double *y,int npoints)
 {
 	for (int i=0;i<npoints;i++){
 		data_[id[i]]->addPoint(x[i],y[i]);
-		if (x[i] > xMaxWin_) // start scrolling
+		double xd = x[i]-data_[id[i]]->xOffset;
+		if (xd > xMaxWin_) // start scrolling
 		{
-			xMaxWin_=x[i];
+			xMaxWin_=xd;
 			xMinWin_= xMaxWin_-scrollingWindowSize_;
 		}
 	}
@@ -260,6 +282,9 @@ void Plotter::paintEvent(QPaintEvent *)
 		
 		double *x=cd->x;
 		double *y=cd->y;
+		double xOffset = cd->xOffset;
+		double yOffset = cd->yOffset;
+		
 		int head=cd->head();
 		int npts=cd->numPoints();
 		if (npts==0) continue;
@@ -270,14 +295,14 @@ void Plotter::paintEvent(QPaintEvent *)
 		if (scrolling_) // work backwards from head
 		{
 			bool checktail=true;
-			int lastxp = rint(xsf*(x[head]-xMinTick_));
-			int lastyp = h-1 - rint(ysf*(y[head]-yMinTick_));
+			int lastxp = rint(xsf*(x[head]-xOffset - xMinTick_));
+			int lastyp = h-1 - rint(ysf*(y[head]- yOffset - yMinTick_));
 			for (int i=head-1;i>=0;i--)
 			{
 				if ( x[i] >= xMinWin_)
 				{
-					int xp = rint(xsf*(x[i]-xMinTick_));
-					int yp = h-1-rint(ysf*(y[i]-yMinTick_));
+					int xp = rint(xsf*(x[i]-xOffset - xMinTick_));
+					int yp = h-1-rint(ysf*(y[i]- yOffset - yMinTick_));
 					switch (pa.plotStyle)
 					{
 						case PlotStyles::Lines :
@@ -310,8 +335,8 @@ void Plotter::paintEvent(QPaintEvent *)
 				{
 					if ( x[i] >= xMinWin_)
 					{
-						int xp = rint(xsf*(x[i]-xMinTick_));
-						int yp = h-1-rint(ysf*(y[i]-yMinTick_));
+						int xp = rint(xsf*(x[i]-xOffset-xMinTick_));
+						int yp = h-1-rint(ysf*(y[i]-yOffset-yMinTick_));
 						switch (pa.plotStyle)
 						{
 							case PlotStyles::Lines :

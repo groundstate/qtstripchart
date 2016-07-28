@@ -473,7 +473,7 @@ QString AxisWidget::formatTick(double x,int e,double ts)
 		xp = ceil(fabs(log10(fabs(x))))+1; // digits before DP
 	int tsp=0;
 	tsp =  ceil(fabs(log10(fabs(ts))))+1; // digits after DP
-	qDebug() << x << " " << e << " " << d << " " << xp << " " << tsp;
+	//qDebug() << x << " " << e << " " << d << " " << xp << " " << tsp;
 	fs = "%."+QString::number(xp+tsp)+"g";
 	r.sprintf(fs.toLatin1(),x/d);
 	
