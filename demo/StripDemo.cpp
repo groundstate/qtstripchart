@@ -33,6 +33,9 @@
 #include <cmath>
 
 #include <QtGui>
+#include <QMenu>
+#include <QMenuBar>
+#include <QInputDialog>
 
 #include "StripDemo.h"
 #include "QtStripchart.h"
